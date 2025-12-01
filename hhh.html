@@ -1,0 +1,151 @@
+<!DOCTYPE html><html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>iPhone Virtual iOS 18</title>
+<style>
+body {margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#222; font-family:sans-serif; user-select:none;}
+.iphone {position:relative; width:360px; height:720px; background:#fff; border-radius:40px; box-shadow:0 0 20px rgba(0,0,0,0.5); overflow:hidden; display:flex; flex-direction:column;}
+.screen {flex:1; background-image:url('https://picsum.photos/500/1000'); background-size:cover; background-position:center; position:relative; overflow:hidden; transition:filter 0.2s;}
+.notch {position:absolute; top:0; left:50%; transform:translateX(-50%); width:150px; height:30px; background:#000; border-radius:10px 10px 20px 20px; z-index:10;}
+.status-bar {height:24px; background:rgba(255,255,255,0.5); display:flex; justify-content:space-between; align-items:center; padding:0 8px; font-size:12px; position:relative; z-index:5;}
+.apps {display:grid; grid-template-columns:repeat(4, 1fr); grid-auto-rows:80px; padding:10px; gap:10px; overflow-y:auto; height:calc(100% - 24px);}
+.app {background:rgba(255,255,255,0.8); border-radius:16px; display:flex; justify-content:center; align-items:center; font-weight:bold; cursor:pointer; font-size:24px;}
+.dock {height:80px; background:rgba(255,255,255,0.8); display:flex; justify-content:space-around; align-items:center;}
+.dock .app {width:60px; height:60px;}
+.home-button {height:40px; background:#ccc; text-align:center; line-height:40px; cursor:pointer; font-weight:bold;}
+.app-screen {position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.95); display:none; flex-direction:column; z-index:20; transition:transform 0.3s;}
+.app-screen.active {display:flex;}
+.app-header {height:40px; background:#eee; display:flex; justify-content:space-between; align-items:center; padding:0 10px; font-weight:bold;}
+.close-btn {cursor:pointer; color:red;}
+.content {flex:1; padding:10px; overflow-y:auto;}
+.button {padding:6px 12px; background:#007aff; color:#fff; border:none; border-radius:8px; cursor:pointer;}
+input[type="text"], input[type="range"] {width:100%; padding:6px; margin-bottom:10px;}
+.message {background:#ddd; padding:6px 10px; margin:4px 0; border-radius:8px;}
+textarea {width:100%; height:200px; padding:6px; margin-bottom:10px; resize:none;}
+iframe {width:100%; height:calc(100% - 40px); border:none;}
+#battery-display {position:absolute; top:30px; right:10px; font-weight:bold; color:#fff; z-index:10;}
+</style>
+</head>
+<body><div class="iphone">
+  <div class="notch"></div>
+  <div class="screen">
+    <div class="status-bar">
+      <span id="clock">9:41 AM</span>
+      <span id="battery-display">🔋100%</span>
+    </div>
+    <div class="apps">
+      <div class="app" data-app="messages">💬</div>
+      <div class="app" data-app="facebook">📘</div>
+      <div class="app" data-app="whatsapp">🟢</div>
+      <div class="app" data-app="camera">📸</div>
+      <div class="app" data-app="music">🎵</div>
+      <div class="app" data-app="notes">✏️</div>
+      <div class="app" data-app="clock-app">⏰</div>
+      <div class="app" data-app="browser">🌐</div>
+    </div>
+    <div class="dock">
+      <div class="app" data-app="settings">⚙️</div>
+      <div class="app" data-app="appstore">🛒</div>
+    </div>
+  </div>
+  <div class="home-button">Home</div>
+</div><!-- Apps --><div id="messages" class="app-screen">
+  <div class="app-header"><span>Mensajes</span><span class="close-btn">X</span></div>
+  <div class="content" id="msg-content"></div>
+  <input type="text" id="msg-input" placeholder="Escribe un mensaje">
+  <button class="button" id="send-msg">Enviar</button>
+</div><div id="whatsapp" class="app-screen">
+  <div class="app-header"><span>WhatsFaux</span><span class="close-btn">X</span></div>
+  <div class="content" id="wa-content"></div>
+  <input type="text" id="wa-input" placeholder="Escribe un mensaje">
+  <button class="button" id="send-wa">Enviar</button>
+</div><div id="music" class="app-screen">
+  <div class="app-header"><span>Música</span><span class="close-btn">X</span></div>
+  <div class="content">
+    <h3>Reproductor de Música</h3>
+    <audio id="music-player" controls style="width:100%;">
+      <source src="https://files.freemusicarchive.org/storage-freemusicarchive-org/music/no_curator/Bad_Snacks/Future_Funk/Bad_Snacks_-_Future_City_Funk.mp3" type="audio/mpeg">
+      Tu navegador no soporta audio.
+    </audio>
+  </div>
+</div><div id="notes" class="app-screen">
+  <div class="app-header"><span>Notas</span><span class="close-btn">X</span></div>
+  <div class="content">
+    <textarea placeholder="Escribe tus notas aquí..."></textarea>
+  </div>
+</div><div id="clock-app" class="app-screen">
+  <div class="app-header"><span>Reloj</span><span class="close-btn">X</span></div>
+  <div class="content" id="clock-screen" style="font-size:48px; text-align:center; margin-top:100px;"></div>
+</div><div id="browser" class="app-screen">
+  <div class="app-header"><span>Navegador</span><span class="close-btn">X</span></div>
+  <div class="content">
+    <input type="text" id="url-input" placeholder="Escribe URL de confianza, ej: https://example.com">
+    <button class="button" id="go-btn">Ir</button>
+    <iframe id="browser-frame" src=""></iframe>
+  </div>
+</div><script>
+// Abrir apps
+const apps = document.querySelectorAll('.app');
+const appScreens = document.querySelectorAll('.app-screen');
+const homeButton = document.querySelector('.home-button');
+apps.forEach(app => {
+  app.addEventListener('click',()=>{if(!iphoneOff)document.getElementById(app.dataset.app)?.classList.add('active');});
+});
+document.querySelectorAll('.close-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{btn.closest('.app-screen').classList.remove('active');});
+});
+homeButton.addEventListener('click',()=>{appScreens.forEach(screen=>screen.classList.remove('active'));});
+
+// Reloj real
+function updateClock(){
+  const now=new Date();
+  let h=now.getHours(); let m=now.getMinutes();
+  const ampm=h>=12?'PM':'AM'; h=h%12; h=h?h:12; m=m<10?'0'+m:m;
+  document.getElementById('clock').innerText=h+':'+m+' '+ampm;
+  document.getElementById('clock-screen').innerText=h+':'+m+' '+ampm;
+}
+setInterval(updateClock,1000);
+updateClock();
+
+// WhatsFaux IA
+const waInput=document.getElementById('wa-input');
+const waContent=document.getElementById('wa-content');
+document.getElementById('send-wa').addEventListener('click',()=>{
+  const msg=waInput.value.trim(); if(msg==='')return;
+  const div=document.createElement('div'); div.className='message'; div.textContent='Tú: '+msg; waContent.appendChild(div);
+  waInput.value=''; waContent.scrollTop=waContent.scrollHeight;
+  setTimeout(()=>{const reply=document.createElement('div'); reply.className='message'; reply.textContent='IA: '+generateReply(msg); waContent.appendChild(reply); waContent.scrollTop=waContent.scrollHeight;},800);
+});
+function generateReply(msg){
+  msg=msg.toLowerCase();
+  if(msg.includes('hola')) return '¡Hola! 😼';
+  if(msg.includes('cómo estás')) return 'Todo bien 😼';
+  if(msg.includes('adiós')) return '¡Hasta luego! 💥';
+  return 'Hmm… interesante 🤔';
+}
+
+// Navegador confiable
+document.getElementById('go-btn').addEventListener('click',()=>{
+  let url=document.getElementById('url-input').value.trim();
+  if(url && (url.startsWith('https://')||url.startsWith('http://'))){document.getElementById('browser-frame').src=url;}
+  else{alert('URL no válida o no confiable.');}
+});
+
+// Música ya funciona con controls del navegador
+
+// Batería
+let battery=100; let iphoneOff=false;
+const batteryDisplay=document.getElementById('battery-display');
+function updateBatteryDisplay(){batteryDisplay.textContent='🔋'+battery+'%';}
+updateBatteryDisplay();
+const batteryInterval=setInterval(()=>{
+  if(!iphoneOff){battery--; if(battery<=0){battery=0; turnOffIphone();} updateBatteryDisplay();}
+},60000);
+function turnOffIphone(){
+  iphoneOff=true;
+  document.body.innerHTML=`<div style="background:black; width:100vw; height:100vh; display:flex; justify-content:center; align-items:center; color:white; font-size:24px; font-family:sans-serif;">
+  <div>El iPhone se quedó sin batería 🌩️<br><br>Para encenderlo reinicia la página (F5)</div></div>`;
+}
+</script></body>
+</html>
